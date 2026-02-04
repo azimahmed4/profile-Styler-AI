@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile Style Snap</title>
+    <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
+    <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding: 50px; background: #f4f4f9; }
+        #output { margin-top: 20px; border: 2px solid #ddd; max-width: 400px; }
+        .upload-box { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: inline-block; }
+    </style>
+</head>
+<body>
+
+    <div class="upload-box">
+        <h2>🎨 প্রোফাইল পিকচার স্টাইলার</h2>
+        <p>পাইথন দিয়ে সরাসরি গিটহাবে প্রসেসিং</p>
+        <input type="file" id="file-upload" accept="image/*">
+        <br><br>
+        <button id="magic-btn" py-click="apply_style">ম্যাজিক স্টাইল ✨</button>
+        <br>
+        <div id="status">পাইথন লোড হচ্ছে, অপেক্ষা করুন...</div>
+        <img id="output">
+    </div>
+
+    <py-config>
+        packages = ["Pillow"]
+    </py-config>
+
+    <script type="py">
+        from pyscript import document
+        from PIL import Image, ImageOps
+        import io
+        import base64
+        import js
+
+        # স্ট্যাটাস আপডেট
+        document.getElementById("status").innerHTML = "পাইথন রেডি! ছবি আপলোড করুন।"
+
+        async def apply_style(event):
+            status = document.getElementById("status")
+            status.innerHTML = "প্রসেসিং চলছে..."
+            
+            # ফাইল রিড করা
+            file_list = document.getElementById("file-upload").files
+            if not file_list:
+                status.innerHTML = "দয়া করে একটি ছবি সিলেক্ট করুন!"
+                return
+
+            # জাভাস্ক্রিপ্ট থেকে ফাইল ডাটা নেওয়া
+            file = await file_list.item(0).arrayBuffer()
+            img_bytes = file.to_bytes()
+            
+            # Pillow দিয়ে ইমেজ প্রসেসিং
+            img = Image.open(io.BytesIO(img_bytes)).convert("RGBA")
+            
+            # উদাহরণ: একটি নীল বর্ডার বা স্টাইল যোগ করা (আপনি এখানে ফ্রেমের লিঙ্কও যোগ করতে পারেন)
+            styled_img = ImageOps.expand(img, border=30, fill='blue')
+            
+            # আউটপুট দেখানোর জন্য এনকোড করা
+            buffered = io.BytesIO()
+            styled_img.save(buffered, format="PNG")
+            img_str = base64.b64encode(buffered.getvalue()).decode()
+            
+            document.getElementById("output").src = f"data:image/png;base64,{img_str}"
+            status.innerHTML = "স্টাইল কমপ্লিট! ✅"
+    </script>
+
+</body>
+</html>
