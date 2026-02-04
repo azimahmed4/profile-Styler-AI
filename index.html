@@ -1,27 +1,35 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Profile Style Snap</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Style Snap Pro</title>
     <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
     <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
     <style>
-        body { font-family: sans-serif; text-align: center; padding: 50px; background: #f4f4f9; }
-        #output { margin-top: 20px; border: 2px solid #ddd; max-width: 400px; }
-        .upload-box { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: inline-block; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; padding: 40px; background: #eceff1; }
+        .container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: inline-block; min-width: 350px; }
+        h2 { color: #333; margin-bottom: 5px; }
+        #output { margin-top: 20px; border-radius: 10px; max-width: 100%; height: auto; display: none; }
+        .btn { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px; margin-top: 10px; }
+        .btn:hover { background: #0056b3; }
+        #status { margin-top: 15px; font-size: 14px; color: #666; }
     </style>
 </head>
 <body>
 
-    <div class="upload-box">
-        <h2>🎨 প্রোফাইল পিকচার স্টাইলার</h2>
-        <p>পাইথন দিয়ে সরাসরি গিটহাবে প্রসেসিং</p>
+    <div class="container">
+        <h2>✨ Profile Styler Pro</h2>
+        <p>Enhance your profile picture with magic styles</p>
+        
         <input type="file" id="file-upload" accept="image/*">
         <br><br>
-        <button id="magic-btn" py-click="apply_style">ম্যাজিক স্টাইল ✨</button>
-        <br>
-        <div id="status">পাইথন লোড হচ্ছে, অপেক্ষা করুন...</div>
+        <button id="magic-btn" class="btn" py-click="apply_style">Magic Style ✨</button>
+        
+        <div id="status">Loading Python environment...</div>
         <img id="output">
+        <br>
+        <div id="download-area"></div>
     </div>
 
     <py-config>
@@ -31,41 +39,60 @@
     <script type="py">
         from pyscript import document
         from PIL import Image, ImageOps
-        import io
-        import base64
-        import js
+        import io, base64, random, js
 
-        # স্ট্যাটাস আপডেট
-        document.getElementById("status").innerHTML = "পাইথন রেডি! ছবি আপলোড করুন।"
+        # Sample remote frames (Transparent PNGs)
+        FRAME_URLS = [
+            "https://raw.githubusercontent.com/Pravasith/Profile-Frame-API/main/frames/frame1.png",
+            "https://raw.githubusercontent.com/Pravasith/Profile-Frame-API/main/frames/frame2.png",
+            "https://raw.githubusercontent.com/Pravasith/Profile-Frame-API/main/frames/frame3.png"
+        ]
+
+        document.getElementById("status").innerHTML = "Ready! Upload a photo."
 
         async def apply_style(event):
             status = document.getElementById("status")
-            status.innerHTML = "প্রসেসিং চলছে..."
-            
-            # ফাইল রিড করা
             file_list = document.getElementById("file-upload").files
+            
             if not file_list:
-                status.innerHTML = "দয়া করে একটি ছবি সিলেক্ট করুন!"
+                status.innerHTML = "Please select an image first!"
                 return
 
-            # জাভাস্ক্রিপ্ট থেকে ফাইল ডাটা নেওয়া
+            status.innerHTML = "Applying magic style..."
+            
+            # Read User Image
             file = await file_list.item(0).arrayBuffer()
             img_bytes = file.to_bytes()
-            
-            # Pillow দিয়ে ইমেজ প্রসেসিং
-            img = Image.open(io.BytesIO(img_bytes)).convert("RGBA")
-            
-            # উদাহরণ: একটি নীল বর্ডার বা স্টাইল যোগ করা (আপনি এখানে ফ্রেমের লিঙ্কও যোগ করতে পারেন)
-            styled_img = ImageOps.expand(img, border=30, fill='blue')
-            
-            # আউটপুট দেখানোর জন্য এনকোড করা
-            buffered = io.BytesIO()
-            styled_img.save(buffered, format="PNG")
-            img_str = base64.b64encode(buffered.getvalue()).decode()
-            
-            document.getElementById("output").src = f"data:image/png;base64,{img_str}"
-            status.innerHTML = "স্টাইল কমপ্লিট! ✅"
-    </script>
+            user_img = Image.open(io.BytesIO(img_bytes)).convert("RGBA")
 
+            try:
+                # Pick a random frame URL
+                frame_url = random.choice(FRAME_URLS)
+                
+                # Fetch frame from URL using JS fetch
+                response = await js.fetch(frame_url)
+                frame_bytes = await response.arrayBuffer()
+                frame_img = Image.open(io.BytesIO(frame_bytes.to_bytes())).convert("RGBA")
+
+                # Resize user image to fit frame
+                user_img = ImageOps.fit(user_img, frame_img.size)
+
+                # Composite Image (Layering)
+                final_img = Image.alpha_composite(user_img, frame_img)
+
+                # Convert to base64 to show in browser
+                buffered = io.BytesIO()
+                final_img.save(buffered, format="PNG")
+                img_str = base64.b64encode(buffered.getvalue()).decode()
+
+                # Update UI
+                out_img = document.getElementById("output")
+                out_img.src = f"data:image/png;base64,{img_str}"
+                out_img.style.display = "inline-block"
+                status.innerHTML = "Style applied successfully! ✅"
+                
+            except Exception as e:
+                status.innerHTML = f"Error: Could not load frames. {str(e)}"
+    </script>
 </body>
 </html>
