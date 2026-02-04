@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile Magic AI - Mobile Friendly</title>
+    <title>RGB Magic Pro AI</title>
     <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
     <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
     <style>
-        /* Multi-color Radial Background */
+        /* Portfolio-style Multi-color Radial Background */
         body { 
             font-family: 'Inter', sans-serif; 
             margin: 0;
@@ -19,96 +19,55 @@
             color: white; 
             min-height: 100vh;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 15px;
-            box-sizing: border-box;
+            padding: 15px; box-sizing: border-box;
         }
 
         .container { 
-            background: rgba(15, 23, 42, 0.8); 
-            padding: 25px; 
-            border-radius: 25px; 
-            box-shadow: 0 0 50px rgba(0,0,0,0.6); 
-            border: 1px solid rgba(255,255,255,0.1);
-            backdrop-filter: blur(20px); 
-            text-align: center; 
-            width: 100%;
-            max-width: 450px; /* PC তে বড় দেখাবে না */
-            box-sizing: border-box;
+            background: rgba(15, 23, 42, 0.8); padding: 30px; border-radius: 25px; 
+            box-shadow: 0 0 50px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px); text-align: center; width: 100%; max-width: 420px;
         }
 
-        h1 { font-size: 1.8rem; margin-bottom: 20px; }
-
-        /* Mobile Responsive Upload Box */
         .upload-area {
-            border: 2px dashed #38bdf8; 
-            padding: 20px; 
-            border-radius: 15px;
-            background: rgba(56, 189, 248, 0.05); 
-            cursor: pointer; 
-            display: block;
-            margin-bottom: 20px; 
-            transition: 0.3s;
-            word-wrap: break-word; /* লম্বা ফাইলের নাম যেন স্ক্রিন না কাটায় */
+            border: 2px dashed #38bdf8; padding: 25px; border-radius: 15px;
+            background: rgba(56, 189, 248, 0.05); cursor: pointer; display: block;
+            margin-bottom: 20px; transition: 0.3s;
         }
         input[type="file"] { display: none; }
 
-        .btn-group { display: flex; flex-direction: column; gap: 12px; }
-        .btn { 
-            border: none; 
-            padding: 16px; 
-            border-radius: 12px; 
-            cursor: pointer; 
-            font-weight: bold; 
-            font-size: 16px; 
-            width: 100%; 
-            touch-action: manipulation; /* মোবাইলে ক্লিকের রেসপন্স ফাস্ট করে */
-        }
+        .btn { border: none; padding: 16px; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 16px; width: 100%; }
         
+        /* Animated Rainbow Button */
         .magic-btn { 
-            background: linear-gradient(45deg, #ff0000, #ff00ff, #0000ff, #00ffff, #00ff00, #ffff00, #ff0000);
-            background-size: 400% 400%;
-            animation: gradientBG 5s ease infinite;
-            color: white; 
+            background: linear-gradient(45deg, #ff0000, #00ff00, #0000ff, #ff00ff);
+            background-size: 300% 300%;
+            animation: moveGradient 4s linear infinite;
+            color: white; margin-bottom: 12px;
         }
-        @keyframes gradientBG { 0% {background-position: 0% 50%;} 50% {background-position: 100% 50%;} 100% {background-position: 0% 50%;} }
+        @keyframes moveGradient { 0% {background-position: 0% 50%;} 100% {background-position: 100% 50%;} }
 
         .dl-btn { background: #10b981; color: white; text-decoration: none; display: none; }
 
-        /* Image Display - Mobile Optimized */
-        #output { 
-            margin-top: 25px; 
-            border-radius: 50%; 
-            width: 100%; 
-            max-width: 320px; 
-            aspect-ratio: 1/1; 
-            object-fit: cover; 
-            display: none; 
-            border: 6px solid rgba(255,255,255,0.1);
-        }
+        #output { margin-top: 25px; border-radius: 50%; width: 100%; max-width: 320px; display: none; }
+        #status { margin-top: 15px; font-size: 14px; min-height: 20px; }
         
-        #status { margin-top: 15px; font-size: 14px; min-height: 20px; padding: 10px; border-radius: 8px; }
-        .error-msg { border: 1px solid #f87171; background: rgba(248, 113, 113, 0.1); color: #f87171; }
-        
-        #loader { display: none; margin: 15px auto; border: 4px solid #334155; border-left: 4px solid #c026d3; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
+        #loader { display: none; margin: 15px auto; border: 4px solid #334155; border-left: 4px solid #38bdf8; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
-        footer { margin-top: 20px; font-size: 12px; color: #94a3b8; text-align: center; }
+        footer { margin-top: 20px; font-size: 13px; color: #94a3b8; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>RGB <span style="color: #38bdf8;">Magic</span> Pro</h1>
-        
+        <h1>Profile Magic Pro</h1>
         <label class="upload-area">
             <input type="file" id="file-upload" accept="image/*"/>
             <div id="upload-text">📁 Tap to Select Photo</div>
         </label>
         
-        <div class="btn-group">
-            <button id="magic-btn" class="btn magic-btn" py-click="apply_rgb_magic">Generate Magic ✨</button>
-            <a id="download-link" class="btn dl-btn" onclick="alert('Starting Download...')">Download PNG 📥</a>
-        </div>
+        <button id="magic-btn" class="btn magic-btn" py-click="apply_rgb_magic">Generate Magic ✨</button>
+        <a id="download-link" class="btn dl-btn">Download NOW 📥</a>
         
         <div id="loader"></div>
         <div id="status"></div>
@@ -125,12 +84,8 @@
     <script>
         document.getElementById('file-upload').onchange = function() {
             if (this.files.length > 0) {
-                let name = this.files[0].name;
-                // ফাইলের নাম বেশি বড় হলে ছোট করে দেখানো
-                if(name.length > 20) name = name.substring(0,18) + "...";
-                document.getElementById('upload-text').innerHTML = "✅ " + name;
-                document.getElementById('status').innerHTML = "Ready! Click Generate Magic.";
-                document.getElementById('status').className = "";
+                document.getElementById('upload-text').innerHTML = "✅ Photo Selected";
+                document.getElementById('status').innerHTML = "Ready! Click Generate.";
             }
         };
     </script>
@@ -151,19 +106,15 @@
             dl_btn = document.getElementById("download-link")
             
             file_list = document.getElementById("file-upload").files
-            
             if not file_list:
-                status.innerHTML = "⚠️ Error: Please upload a photo first!"
-                status.className = "error-msg"
+                status.innerHTML = "⚠️ Please select a photo first!"
                 return
 
-            status.innerHTML = "🎨 Creating RGB Magic..."
-            status.className = ""
+            status.innerHTML = "🎨 Creating Multi-Color Glow..."
             loader.style.display = "block"
             output_img.style.display = "none"
             dl_btn.style.display = "none"
-            
-            await asyncio.sleep(1.2)
+            await asyncio.sleep(1)
 
             try:
                 file = await file_list.item(0).arrayBuffer()
@@ -171,44 +122,51 @@
                 size = (1200, 1200)
                 user_img = ImageOps.fit(user_img, size)
 
-                # ১. ট্রান্সপারেন্ট ব্যাকগ্রাউন্ড
+                # ১. নিখুঁত স্বচ্ছ ব্যাকগ্রাউন্ড (Transparent)
                 final = Image.new("RGBA", size, (0, 0, 0, 0))
 
-                # ২. মাল্টি-কালার RGB রেডিয়াল ফ্রেম
-                frame_layer = Image.new("RGBA", size, (0, 0, 0, 0))
-                draw = ImageDraw.Draw(frame_layer)
+                # ২. মাল্টি-কালার আরজিবি গ্রেডিয়েন্ট ফ্রেম লজিক
+                # এটি সলিড কালার নয়, বরং অনেকগুলো রঙের মিশ্রণ তৈরি করবে
+                frame = Image.new("RGBA", size, (0, 0, 0, 0))
+                draw = ImageDraw.Draw(frame)
                 
-                # RGB Colors
-                colors = [(255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 0, 255), (255, 255, 0), (0, 255, 255)]
+                # র্যান্ডম কালার প্যালেট নির্বাচন
+                base_colors = [
+                    (random.randint(200,255), 0, random.randint(100,255)), # Pink/Purple
+                    (0, random.randint(200,255), random.randint(200,255)), # Cyan/Blue
+                    (random.randint(200,255), random.randint(200,255), 0), # Yellow/Gold
+                    (0, 255, 0) # Green
+                ]
                 
-                for i in range(160):
-                    alpha = int(255 * (1 - i/160))
-                    c_idx = (i // 26) % len(colors)
-                    next_c_idx = (c_idx + 1) % len(colors)
-                    ratio = (i % 26) / 26
-                    
-                    r = int(colors[c_idx][0] * (1-ratio) + colors[next_c_idx][0] * ratio)
-                    g = int(colors[c_idx][1] * (1-ratio) + colors[next_c_idx][1] * ratio)
-                    b = int(colors[c_idx][2] * (1-ratio) + colors[next_c_idx][2] * ratio)
+                for i in range(180):
+                    alpha = int(255 * (1 - i/180))
+                    # লেয়ার অনুযায়ী রঙ পরিবর্তন (Gradient effect)
+                    c1 = base_colors[i % len(base_colors)]
+                    c2 = base_colors[(i + 1) % len(base_colors)]
+                    ratio = (i % 45) / 45
+                    r = int(c1[0]*(1-ratio) + c2[0]*ratio)
+                    g = int(c1[1]*(1-ratio) + c2[1]*ratio)
+                    b = int(c1[2]*(1-ratio) + c2[2]*ratio)
                     
                     draw.ellipse([i, i, 1200-i, 1200-i], outline=(r, g, b, alpha), width=3)
 
-                # ৩. সার্কুলার কাট
+                # ৩. ফটো মাস্কিং
                 mask = Image.new("L", size, 0)
                 draw_mask = ImageDraw.Draw(mask)
-                draw_mask.ellipse([75, 75, 1125, 1125], fill=255)
+                draw_mask.ellipse([90, 90, 1110, 1110], fill=255)
                 
                 photo_layer = Image.new("RGBA", size, (0, 0, 0, 0))
                 photo_layer.paste(user_img, (0,0), mask=mask)
 
-                # ৪. গ্লোয়িং ফিল্টার
-                glow = frame_layer.filter(ImageFilter.GaussianBlur(12))
+                # ৪. গ্লোয়িং ইফেক্ট যোগ করা
+                glow = frame.filter(ImageFilter.GaussianBlur(15))
                 
+                # লেয়ারগুলো জোড়া লাগানো
                 final = Image.alpha_composite(final, glow)
-                final = Image.alpha_composite(final, frame_layer)
+                final = Image.alpha_composite(final, frame)
                 final = Image.alpha_composite(final, photo_layer)
 
-                # ৫. কনভার্ট টু ব্রাউজার
+                # ৫. কনভার্ট এবং ডিসপ্লে
                 buffered = io.BytesIO()
                 final.save(buffered, format="PNG")
                 img_str = base64.b64encode(buffered.getvalue()).decode()
@@ -216,16 +174,15 @@
                 output_img.src = f"data:image/png;base64,{img_str}"
                 output_img.style.display = "inline-block"
                 dl_btn.href = f"data:image/png;base64,{img_str}"
-                dl_btn.download = f"rgb_profile_{random.randint(100,999)}.png"
+                dl_btn.download = f"rgb_profile_{random.randint(1000,9999)}.png"
                 dl_btn.style.display = "block"
                 
                 loader.style.display = "none"
-                status.innerHTML = "✨ Style Complete! Check your photo below."
+                status.innerHTML = "✨ Style Applied Successfully!"
 
             except Exception as e:
                 loader.style.display = "none"
-                status.innerHTML = "❌ Error processing image."
-                status.className = "error-msg"
+                status.innerHTML = "⚠️ Please select a photo first!"
     </script>
 </body>
 </html>
