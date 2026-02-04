@@ -3,32 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile Style Snap Pro</title>
+    <title>AI Profile Styler</title>
     <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
     <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; text-align: center; padding: 40px; background: #f0f2f5; }
-        .container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: inline-block; width: 90%; max-width: 500px; }
-        h2 { color: #1a73e8; margin-bottom: 10px; }
-        #output { margin-top: 20px; border-radius: 10px; width: 100%; display: none; border: 1px solid #ddd; }
-        .btn { background: #1a73e8; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; transition: 0.3s; }
-        .btn:hover { background: #1557b0; }
-        #status { margin-top: 15px; font-size: 14px; color: #555; font-weight: 500; }
-        input[type="file"] { margin: 20px 0; font-size: 14px; }
+        body { font-family: 'Inter', sans-serif; text-align: center; padding: 40px; background: #0f172a; color: white; }
+        .container { background: #1e293b; padding: 40px; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); display: inline-block; border: 1px solid #334155; }
+        h1 { margin-bottom: 10px; background: linear-gradient(90deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        #file-upload { margin: 20px 0; padding: 10px; color: #94a3b8; }
+        .btn { background: #3b82f6; color: white; border: none; padding: 12px 30px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn:hover { background: #2563eb; transform: scale(1.05); }
+        #output { margin-top: 30px; border-radius: 50%; box-shadow: 0 0 30px rgba(59, 130, 246, 0.5); display: none; width: 300px; height: 300px; object-fit: cover; }
+        #status { margin-top: 20px; color: #94a3b8; font-size: 14px; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h2>✨ Profile Styler Pro</h2>
-        <p>Apply artistic frames to your photos instantly</p>
+        <h1>Profile Magic AI</h1>
+        <p>Generate glowing radial effects automatically</p>
         
         <input type="file" id="file-upload" accept="image/*">
-        <button id="magic-btn" class="btn" py-click="apply_style">Generate Random Style ✨</button>
+        <br>
+        <button id="magic-btn" class="btn" py-click="apply_ai_style">Generate Glow ✨</button>
         
-        <div id="status">Initializing Python...</div>
+        <div id="status">System starting...</div>
         <img id="output">
-        <div id="download-link-container"></div>
     </div>
 
     <py-config>
@@ -37,63 +37,69 @@
 
     <script type="py">
         from pyscript import document
-        from PIL import Image, ImageOps
-        import io, base64, random, js
+        from PIL import Image, ImageOps, ImageDraw, ImageFilter
+        import io, base64, js
 
-        # Fixed Frame URLs (Using reliable raw github links)
-        FRAME_URLS = [
-            "https://raw.githubusercontent.com/Pravasith/Profile-Frame-API/main/frames/frame1.png",
-            "https://raw.githubusercontent.com/Pravasith/Profile-Frame-API/main/frames/frame2.png",
-            "https://raw.githubusercontent.com/Pravasith/Profile-Frame-API/main/frames/frame3.png"
-        ]
+        document.getElementById("status").innerHTML = "Ready for magic!"
 
-        document.getElementById("status").innerHTML = "Ready! Upload your photo."
-
-        async def apply_style(event):
+        async def apply_ai_style(event):
             status = document.getElementById("status")
-            file_upload = document.getElementById("file-upload")
+            file_list = document.getElementById("file-upload").files
             
-            if not file_upload.files:
-                status.innerHTML = "⚠️ Please select an image first!"
+            if not file_list:
+                status.innerHTML = "Error: Select a photo first!"
                 return
 
-            status.innerHTML = "🌀 Processing your magic style..."
+            status.innerHTML = "Processing with Python AI..."
             
-            try:
-                # 1. Load User Image
-                file = await file_upload.files.item(0).arrayBuffer()
-                user_img = Image.open(io.BytesIO(file.to_bytes())).convert("RGBA")
+            # Read image
+            file = await file_list.item(0).arrayBuffer()
+            user_img = Image.open(io.BytesIO(file.to_bytes())).convert("RGBA")
 
-                # 2. Pick and Fetch Random Frame
-                frame_url = random.choice(FRAME_URLS)
-                response = await js.fetch(frame_url)
-                
-                if not response.ok:
-                    raise Exception("Failed to fetch frame from server.")
-                
-                frame_data = await response.arrayBuffer()
-                frame_img = Image.open(io.BytesIO(frame_data.to_bytes())).convert("RGBA")
+            # 1. Square Crop & Resize
+            size = (800, 800)
+            user_img = ImageOps.fit(user_img, size)
 
-                # 3. Resize User Image to Frame Size
-                user_img = ImageOps.fit(user_img, frame_img.size)
+            # 2. Create Radial Glow Background
+            # This creates the effect you showed in the second picture
+            base = Image.new("RGBA", size, (15, 23, 42, 255))
+            draw = ImageDraw.Draw(base)
+            
+            # Drawing a glowing circle
+            for i in range(100):
+                alpha = int(255 * (1 - i/100))
+                draw.ellipse([i, i, 800-i, 800-i], outline=(56, 189, 248, alpha), width=2)
 
-                # 4. Composite (Overlay frame on user image)
-                final_img = Image.alpha_composite(user_img, frame_img)
+            # 3. Create Circle Mask for User Image
+            mask = Image.new("L", size, 0)
+            draw_mask = ImageDraw.Draw(mask)
+            draw_mask.ellipse([40, 40, 760, 760], fill=255)
+            
+            # Apply Circular Cut
+            output_img = Image.new("RGBA", size, (0, 0, 0, 0))
+            output_img.paste(user_img, (0,0), mask=mask)
 
-                # 5. Convert to Base64 for Display
-                buffered = io.BytesIO()
-                final_img.save(buffered, format="PNG")
-                img_base64 = base64.b64encode(buffered.getvalue()).decode()
+            # 4. Add Glowing Border
+            glow_border = Image.new("RGBA", size, (0,0,0,0))
+            draw_glow = ImageDraw.Draw(glow_border)
+            draw_glow.ellipse([35, 35, 765, 765], outline=(0, 191, 255, 255), width=15)
+            # Soften the glow
+            glow_border = glow_border.filter(ImageFilter.GaussianBlur(5))
+            
+            # Combine everything
+            final = Image.alpha_composite(base, glow_border)
+            final = Image.alpha_composite(final, output_img)
 
-                # Update UI
-                out_img = document.getElementById("output")
-                out_img.src = f"data:image/png;base64,{img_base64}"
-                out_img.style.display = "block"
-                status.innerHTML = "✅ Style applied! Try again for a new look."
-                
-            except Exception as e:
-                status.innerHTML = f"❌ Error: {str(e)}"
-                print(f"Error detail: {e}")
+            # Show Result
+            buffered = io.BytesIO()
+            final.save(buffered, format="PNG")
+            img_str = base64.b64encode(buffered.getvalue()).decode()
+
+            out_element = document.getElementById("output")
+            out_element.src = f"data:image/png;base64,{img_str}"
+            out_element.style.display = "inline-block"
+            status.innerHTML = "Style Applied Successfully! ✅"
+
     </script>
 </body>
 </html>
