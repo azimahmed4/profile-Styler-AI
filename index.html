@@ -3,74 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RGB Magic Pro AI</title>
+    <title>RGB Magic Pro AI </title>
     <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
     <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
     <style>
-        /* Portfolio-style Multi-color Radial Background */
+        /* Dynamic Shifting Background Effect */
         body { 
             font-family: 'Inter', sans-serif; 
             margin: 0;
-            background: 
-                radial-gradient(circle at 10% 10%, #4c1d95 0%, transparent 40%),
-                radial-gradient(circle at 90% 10%, #064e3b 0%, transparent 40%),
-                radial-gradient(circle at 50% 90%, #831843 0%, transparent 40%),
-                radial-gradient(circle at 50% 50%, #020617 0%, #0f172a 100%);
+            background: #020617; /* Solid Dark Base */
+            background-image: 
+                radial-gradient(circle at var(--x, 20%) var(--y, 20%), #4c1d95 0%, transparent 40%),
+                radial-gradient(circle at var(--x2, 80%) var(--y2, 80%), #064e3b 0%, transparent 40%);
             color: white; 
             min-height: 100vh;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 15px; box-sizing: border-box;
+            overflow: hidden;
+            transition: background 2s ease;
         }
 
         .container { 
-            background: rgba(15, 23, 42, 0.8); padding: 30px; border-radius: 25px; 
-            box-shadow: 0 0 50px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1);
-            backdrop-filter: blur(20px); text-align: center; width: 100%; max-width: 420px;
+            background: rgba(15, 23, 42, 0.85); 
+            padding: 35px; 
+            border-radius: 30px; 
+            box-shadow: 0 0 60px rgba(0,0,0,0.7); 
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px); 
+            text-align: center; 
+            width: 90%;
+            max-width: 420px;
         }
 
         .upload-area {
-            border: 2px dashed #38bdf8; padding: 25px; border-radius: 15px;
+            border: 2px dashed #38bdf8; padding: 20px; border-radius: 15px;
             background: rgba(56, 189, 248, 0.05); cursor: pointer; display: block;
             margin-bottom: 20px; transition: 0.3s;
         }
         input[type="file"] { display: none; }
 
-        .btn { border: none; padding: 16px; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 16px; width: 100%; }
+        .btn-group { display: flex; flex-direction: column; align-items: center; gap: 12px; }
         
-        /* Animated Rainbow Button */
+        /* Large Magic Button */
         .magic-btn { 
-            background: linear-gradient(45deg, #ff0000, #00ff00, #0000ff, #ff00ff);
-            background-size: 300% 300%;
-            animation: moveGradient 4s linear infinite;
-            color: white; margin-bottom: 12px;
+            border: none; padding: 16px; border-radius: 12px; cursor: pointer; 
+            font-weight: bold; font-size: 18px; width: 100%;
+            background: linear-gradient(45deg, #ff0000, #ff00ff, #0000ff, #00ffff, #00ff00);
+            background-size: 300%; animation: anime 4s linear infinite; color: white;
         }
-        @keyframes moveGradient { 0% {background-position: 0% 50%;} 100% {background-position: 100% 50%;} }
+        @keyframes anime { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
 
-        .dl-btn { background: #10b981; color: white; text-decoration: none; display: none; }
+        /* Smaller Download Button */
+        .dl-btn { 
+            background: #10b981; color: white; text-decoration: none; display: none; 
+            padding: 10px 20px; border-radius: 8px; font-size: 14px; width: 60%; font-weight: 600;
+        }
 
-        #output { margin-top: 25px; border-radius: 50%; width: 100%; max-width: 320px; display: none; }
-        #status { margin-top: 15px; font-size: 14px; min-height: 20px; }
+        #output { margin-top: 25px; border-radius: 50%; width: 100%; max-width: 300px; display: none; }
         
         #loader { display: none; margin: 15px auto; border: 4px solid #334155; border-left: 4px solid #38bdf8; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
-        footer { margin-top: 20px; font-size: 13px; color: #94a3b8; }
+        footer { margin-top: 20px; font-size: 12px; color: #64748b; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>Profile Magic Pro</h1>
+        <h1>RGB Magic Pro AI</h1>
         <label class="upload-area">
             <input type="file" id="file-upload" accept="image/*"/>
             <div id="upload-text">📁 Tap to Select Photo</div>
         </label>
         
-        <button id="magic-btn" class="btn magic-btn" py-click="apply_rgb_magic">Generate Magic ✨</button>
-        <a id="download-link" class="btn dl-btn">Download NOW 📥</a>
+        <div class="btn-group">
+            <button id="magic-btn" class="btn magic-btn" py-click="apply_rgb_magic">Generate Magic ✨</button>
+            <a id="download-link" class="dl-btn">Download 📥</a>
+        </div>
         
         <div id="loader"></div>
-        <div id="status"></div>
+        <div id="status" style="margin-top:10px; font-size:13px;"></div>
         <img id="output">
     </div>
 
@@ -78,14 +89,20 @@
        <p>© 2026 All Rights Reserved | Developed by 
             <a href="https://azimahmed4.github.io/portfolio/ক" class="dev-link">AZIM AHMED</a>
         </p>
-    
     </footer>
 
     <script>
+        // Background automatic shift movement
+        setInterval(() => {
+            document.body.style.setProperty('--x', Math.random() * 100 + '%');
+            document.body.style.setProperty('--y', Math.random() * 100 + '%');
+            document.body.style.setProperty('--x2', Math.random() * 100 + '%');
+            document.body.style.setProperty('--y2', Math.random() * 100 + '%');
+        }, 3000);
+
         document.getElementById('file-upload').onchange = function() {
             if (this.files.length > 0) {
-                document.getElementById('upload-text').innerHTML = "✅ Photo Selected";
-                document.getElementById('status').innerHTML = "Ready! Click Generate.";
+                document.getElementById('upload-text').innerHTML = "✅ Photo Ready";
             }
         };
     </script>
@@ -107,13 +124,11 @@
             
             file_list = document.getElementById("file-upload").files
             if not file_list:
-                status.innerHTML = "⚠️ Please select a photo first!"
+                status.innerHTML = "⚠️ Upload photo first!"
                 return
 
-            status.innerHTML = "🎨 Creating Multi-Color Glow..."
             loader.style.display = "block"
-            output_img.style.display = "none"
-            dl_btn.style.display = "none"
+            status.innerHTML = "Processing..."
             await asyncio.sleep(1)
 
             try:
@@ -122,51 +137,41 @@
                 size = (1200, 1200)
                 user_img = ImageOps.fit(user_img, size)
 
-                # ১. নিখুঁত স্বচ্ছ ব্যাকগ্রাউন্ড (Transparent)
+                # Transparent Canvas
                 final = Image.new("RGBA", size, (0, 0, 0, 0))
 
-                # ২. মাল্টি-কালার আরজিবি গ্রেডিয়েন্ট ফ্রেম লজিক
-                # এটি সলিড কালার নয়, বরং অনেকগুলো রঙের মিশ্রণ তৈরি করবে
+                # RGB Multi-color Frame
                 frame = Image.new("RGBA", size, (0, 0, 0, 0))
                 draw = ImageDraw.Draw(frame)
                 
-                # র্যান্ডম কালার প্যালেট নির্বাচন
-                base_colors = [
-                    (random.randint(200,255), 0, random.randint(100,255)), # Pink/Purple
-                    (0, random.randint(200,255), random.randint(200,255)), # Cyan/Blue
-                    (random.randint(200,255), random.randint(200,255), 0), # Yellow/Gold
-                    (0, 255, 0) # Green
-                ]
+                # RGB Multi-color mixing
+                colors = [(255,0,0), (0,255,0), (0,0,255), (255,0,255), (0,255,255)]
                 
-                for i in range(180):
-                    alpha = int(255 * (1 - i/180))
-                    # লেয়ার অনুযায়ী রঙ পরিবর্তন (Gradient effect)
-                    c1 = base_colors[i % len(base_colors)]
-                    c2 = base_colors[(i + 1) % len(base_colors)]
-                    ratio = (i % 45) / 45
-                    r = int(c1[0]*(1-ratio) + c2[0]*ratio)
-                    g = int(c1[1]*(1-ratio) + c2[1]*ratio)
-                    b = int(c1[2]*(1-ratio) + c2[2]*ratio)
-                    
+                for i in range(160):
+                    alpha = int(255 * (1 - i/160))
+                    c_idx = (i // 32) % len(colors)
+                    next_c_idx = (c_idx + 1) % len(colors)
+                    ratio = (i % 32) / 32
+                    r = int(colors[c_idx][0]*(1-ratio) + colors[next_c_idx][0]*ratio)
+                    g = int(colors[c_idx][1]*(1-ratio) + colors[next_c_idx][1]*ratio)
+                    b = int(colors[c_idx][2]*(1-ratio) + colors[next_c_idx][2]*ratio)
                     draw.ellipse([i, i, 1200-i, 1200-i], outline=(r, g, b, alpha), width=3)
 
-                # ৩. ফটো মাস্কিং
+                # Circular Mask
                 mask = Image.new("L", size, 0)
                 draw_mask = ImageDraw.Draw(mask)
-                draw_mask.ellipse([90, 90, 1110, 1110], fill=255)
+                draw_mask.ellipse([80, 80, 1120, 1120], fill=255)
                 
                 photo_layer = Image.new("RGBA", size, (0, 0, 0, 0))
                 photo_layer.paste(user_img, (0,0), mask=mask)
 
-                # ৪. গ্লোয়িং ইফেক্ট যোগ করা
+                # Soft Glow Layer
                 glow = frame.filter(ImageFilter.GaussianBlur(15))
                 
-                # লেয়ারগুলো জোড়া লাগানো
                 final = Image.alpha_composite(final, glow)
                 final = Image.alpha_composite(final, frame)
                 final = Image.alpha_composite(final, photo_layer)
 
-                # ৫. কনভার্ট এবং ডিসপ্লে
                 buffered = io.BytesIO()
                 final.save(buffered, format="PNG")
                 img_str = base64.b64encode(buffered.getvalue()).decode()
@@ -174,15 +179,15 @@
                 output_img.src = f"data:image/png;base64,{img_str}"
                 output_img.style.display = "inline-block"
                 dl_btn.href = f"data:image/png;base64,{img_str}"
-                dl_btn.download = f"rgb_profile_{random.randint(1000,9999)}.png"
+                dl_btn.download = "rgb_profile.png"
                 dl_btn.style.display = "block"
                 
                 loader.style.display = "none"
-                status.innerHTML = "✨ Style Applied Successfully!"
+                status.innerHTML = "✨ Done!"
 
-            except Exception as e:
+            except Exception:
                 loader.style.display = "none"
-                status.innerHTML = "⚠️ Please select a photo first!"
+                status.innerHTML = "❌ Error!"
     </script>
 </body>
 </html>
