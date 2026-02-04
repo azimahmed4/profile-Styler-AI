@@ -3,74 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Profile Styler Pro</title>
+    <title>Profile Magic AI - Pro Version</title>
     <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
     <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
     <style>
-        /* Modern Gradient Background */
+        /* Advanced Multiple Radial Background */
         body { 
             font-family: 'Inter', sans-serif; 
-            text-align: center; 
-            padding: 20px; 
             margin: 0;
-            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%); 
+            background: 
+                radial-gradient(circle at 20% 30%, #2e1065 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, #0c4a6e 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, #0f172a 0%, #020617 100%);
             color: white; 
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        .container { 
-            background: rgba(30, 41, 59, 0.7); 
-            padding: 40px; 
-            border-radius: 24px; 
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); 
-            display: inline-block; 
-            border: 1px solid rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            max-width: 90%;
-            margin-top: 50px;
-        }
-        h1 { margin-bottom: 10px; font-size: 2.5rem; letter-spacing: -1px; }
-        .accent { background: linear-gradient(90deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
-        
-        #file-upload { margin: 20px 0; padding: 10px; color: #94a3b8; }
-        
-        .btn-group { margin-top: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-        
-        .btn { border: none; padding: 14px 28px; border-radius: 12px; cursor: pointer; font-weight: 600; transition: all 0.3s; font-size: 16px; }
-        .magic-btn { background: #3b82f6; color: white; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4); }
-        .magic-btn:hover { background: #2563eb; transform: translateY(-2px); }
-        
-        .dl-btn { background: #10b981; color: white; display: none; text-decoration: none; }
-        .dl-btn:hover { background: #059669; transform: translateY(-2px); }
 
-        #output { margin-top: 30px; border-radius: 50%; display: none; width: 320px; height: 320px; object-fit: cover; border: 5px solid rgba(255,255,255,0.1); }
-        #status { margin-top: 20px; color: #38bdf8; font-weight: 500; }
+        .container { 
+            background: rgba(15, 23, 42, 0.6); 
+            padding: 40px; 
+            border-radius: 30px; 
+            box-shadow: 0 0 50px rgba(0,0,0,0.8); 
+            border: 1px solid rgba(255,255,255,0.05);
+            backdrop-filter: blur(15px);
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        /* Stylish Upload Button */
+        .custom-file-upload {
+            border: 2px dashed #38bdf8;
+            display: inline-block;
+            padding: 15px 30px;
+            cursor: pointer;
+            border-radius: 15px;
+            background: rgba(56, 189, 248, 0.05);
+            transition: 0.3s;
+            margin-bottom: 20px;
+        }
+        .custom-file-upload:hover { background: rgba(56, 189, 248, 0.15); }
+        input[type="file"] { display: none; }
+
+        .btn-group { margin-top: 25px; display: flex; gap: 15px; justify-content: center; }
         
-        footer { margin-top: 50px; padding: 20px; color: #64748b; font-size: 13px; line-height: 1.6; }
-        .disclaimer { max-width: 600px; margin: 0 auto; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; }
+        .btn { border: none; padding: 15px 30px; border-radius: 12px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .magic-btn { background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white; }
+        .dl-btn { background: #10b981; color: white; display: none; text-decoration: none; }
+
+        #output { 
+            margin-top: 30px; 
+            border-radius: 50%; 
+            width: 350px; 
+            height: 350px; 
+            object-fit: cover; 
+            display: none;
+            box-shadow: 0 0 40px rgba(139, 92, 246, 0.3);
+        }
+
+        #status { margin-top: 20px; color: #38bdf8; font-size: 14px; }
+
+        /* Developer Footer */
+        footer { margin-top: auto; padding: 30px; text-align: center; }
+        .dev-link { 
+            color: #38bdf8; 
+            text-decoration: none; 
+            font-weight: bold; 
+            font-size: 16px;
+            border-bottom: 1px solid transparent;
+            transition: 0.3s;
+        }
+        .dev-link:hover { border-bottom: 1px solid #38bdf8; color: #7dd3fc; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1><span class="accent">Profile</span> Magic AI</h1>
-        <p style="color: #94a3b8;">Create unique glowing profile styles instantly</p>
+        <h1><span style="color: #38bdf8;">Profile</span> Magic Pro</h1>
+        <p style="color: #94a3b8;">Style your profile with AI & Radial Effects</p>
         
-        <input type="file" id="file-upload" accept="image/*">
+        <label class="custom-file-upload">
+            <input type="file" id="file-upload" accept="image/*"/>
+            📁 Choose a Photo
+        </label>
         
         <div class="btn-group">
             <button id="magic-btn" class="btn magic-btn" py-click="apply_ai_style">Generate Magic ✨</button>
-            <a id="download-link" class="btn dl-btn">Download Image 📥</a>
+            <a id="download-link" class="btn dl-btn">Download 📥</a>
         </div>
         
-        <div id="status">Initializing AI Engine...</div>
+        <div id="status">Ready to style...</div>
         <img id="output">
     </div>
 
     <footer>
-        <div class="disclaimer">
-            &copy; 2024 Profile Magic AI. All rights reserved.<br>
-            <strong>Disclaimer:</strong> This tool processes images locally in your browser using Python. We do not store or upload your personal photos to any server. Use of this tool is at your own risk.
-        </div>
+        <p>© 2026 All Rights Reserved | Developed by 
+            <a href="https://azimahmed4.github.io/portfolio/" class="dev-link">AZIM AHMED</a>
+        </p>
     </footer>
 
     <py-config>
@@ -82,76 +113,77 @@
         from PIL import Image, ImageOps, ImageDraw, ImageFilter
         import io, base64, random
 
-        document.getElementById("status").innerHTML = "System Ready! Please upload a photo."
-
         async def apply_ai_style(event):
             status = document.getElementById("status")
             file_list = document.getElementById("file-upload").files
             
             if not file_list:
-                status.innerHTML = "❌ Error: Select a photo first!"
+                status.innerHTML = "❌ Please select a photo!"
                 return
 
-            status.innerHTML = "🪄 Magic in progress..."
+            status.innerHTML = "🎨 Mixing colors & styling..."
             
-            # Read image
             file = await file_list.item(0).arrayBuffer()
             user_img = Image.open(io.BytesIO(file.to_bytes())).convert("RGBA")
 
-            # 1. Square Crop & Resize
-            size = (1000, 1000)
+            size = (1200, 1200)
+            # ImageOps.fit automatically centers and crops perfectly
             user_img = ImageOps.fit(user_img, size)
 
-            # 2. Random Color Generation
-            # Generates a new random vibe every time you click
-            r = random.randint(50, 255)
-            g = random.randint(50, 255)
-            b = random.randint(50, 255)
-            glow_color = (r, g, b, 255)
+            # Random Triple Color Mix
+            colors = [
+                (random.randint(100,255), random.randint(0,100), random.randint(100,255)), # Purple-ish
+                (random.randint(0,100), random.randint(100,255), random.randint(150,255)), # Blue-ish
+                (random.randint(200,255), random.randint(100,150), 0) # Gold/Orange
+            ]
+            c1, c2, c3 = random.sample(colors, 3)
 
-            # 3. Create Background with Radial Glow
-            base = Image.new("RGBA", size, (15, 23, 42, 255))
+            # Create Mixed Radial Background
+            base = Image.new("RGBA", size, (10, 15, 30, 255))
             draw = ImageDraw.Draw(base)
-            for i in range(150):
-                alpha = int(200 * (1 - i/150))
-                draw.ellipse([i, i, 1000-i, 1000-i], outline=(r, g, b, alpha), width=2)
+            
+            for i in range(200):
+                alpha = int(180 * (1 - i/200))
+                # Mix colors based on distance
+                current_color = (
+                    int(c1[0]*(1-i/200) + c2[0]*(i/200)),
+                    int(c1[1]*(1-i/200) + c2[1]*(i/200)),
+                    int(c1[2]*(1-i/200) + c2[2]*(i/200)),
+                    alpha
+                )
+                draw.ellipse([i, i, 1200-i, 1200-i], outline=current_color, width=2)
 
-            # 4. Circular Mask
+            # Circular Cut
             mask = Image.new("L", size, 0)
             draw_mask = ImageDraw.Draw(mask)
-            draw_mask.ellipse([50, 50, 950, 950], fill=255)
+            draw_mask.ellipse([60, 60, 1140, 1140], fill=255)
             
             photo_layer = Image.new("RGBA", size, (0, 0, 0, 0))
             photo_layer.paste(user_img, (0,0), mask=mask)
 
-            # 5. Glowing Border
+            # Multi-color Glowing Border
             glow_border = Image.new("RGBA", size, (0,0,0,0))
             draw_glow = ImageDraw.Draw(glow_border)
-            draw_glow.ellipse([45, 45, 955, 955], outline=glow_color, width=20)
-            glow_border = glow_border.filter(ImageFilter.GaussianBlur(8))
+            draw_glow.ellipse([55, 55, 1145, 1145], outline=(c1[0], c1[1], c1[2], 255), width=25)
+            glow_border = glow_border.filter(ImageFilter.GaussianBlur(10))
             
-            # Combine everything
             final = Image.alpha_composite(base, glow_border)
             final = Image.alpha_composite(final, photo_layer)
 
-            # Show Result & Setup Download
             buffered = io.BytesIO()
             final.save(buffered, format="PNG")
-            img_data = buffered.getvalue()
-            img_str = base64.b64encode(img_data).decode()
+            img_str = base64.b64encode(buffered.getvalue()).decode()
 
-            # Update UI
             out_element = document.getElementById("output")
             out_element.src = f"data:image/png;base64,{img_str}"
             out_element.style.display = "inline-block"
             
-            # Setup Download Button
             dl_btn = document.getElementById("download-link")
             dl_btn.href = f"data:image/png;base64,{img_str}"
-            dl_btn.download = f"styled_profile_{random.randint(100,999)}.png"
+            dl_btn.download = "magic_profile.png"
             dl_btn.style.display = "inline-block"
             
-            status.innerHTML = "✨ Success! Your unique style is ready."
+            status.innerHTML = "✅ Done! Your stylish profile is ready."
 
     </script>
 </body>
